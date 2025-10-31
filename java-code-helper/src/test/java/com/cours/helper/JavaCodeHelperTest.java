@@ -59,6 +59,8 @@ class JavaCodeHelperTest {
         assertEquals("myVariableName", helper.toCamelCase("my variable name"));
         assertEquals("test", helper.toCamelCase("test"));
         assertEquals("", helper.toCamelCase(""));
+        assertEquals("", helper.toCamelCase("___"));
+        assertEquals("", helper.toCamelCase("---"));
     }
 
     @Test
@@ -119,13 +121,17 @@ class JavaCodeHelperTest {
     void testGenerateGetterName() {
         assertEquals("getName", helper.generateGetterName("name"));
         assertEquals("getAge", helper.generateGetterName("age"));
-        assertEquals("getIsActive", helper.generateGetterName("isActive"));
+        assertEquals("isActive", helper.generateGetterName("isActive"));
+        assertEquals("isValid", helper.generateGetterName("isValid"));
+        assertEquals("getIs", helper.generateGetterName("is"));
     }
 
     @Test
     void testGenerateSetterName() {
         assertEquals("setName", helper.generateSetterName("name"));
         assertEquals("setAge", helper.generateSetterName("age"));
-        assertEquals("setIsActive", helper.generateSetterName("isActive"));
+        assertEquals("setActive", helper.generateSetterName("isActive"));
+        assertEquals("setValid", helper.generateSetterName("isValid"));
+        assertEquals("setIs", helper.generateSetterName("is"));
     }
 }

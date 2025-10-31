@@ -72,13 +72,22 @@ public class JavaCodeHelper {
         }
         
         String[] words = input.split("[\\s_-]+");
-        StringBuilder result = new StringBuilder(words[0].toLowerCase());
+        if (words.length == 0 || (words.length == 1 && words[0].isEmpty())) {
+            return "";
+        }
         
-        for (int i = 1; i < words.length; i++) {
-            if (!words[i].isEmpty()) {
-                result.append(words[i].substring(0, 1).toUpperCase());
-                if (words[i].length() > 1) {
-                    result.append(words[i].substring(1).toLowerCase());
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                if (first) {
+                    result.append(word.toLowerCase());
+                    first = false;
+                } else {
+                    result.append(word.substring(0, 1).toUpperCase());
+                    if (word.length() > 1) {
+                        result.append(word.substring(1).toLowerCase());
+                    }
                 }
             }
         }
@@ -192,6 +201,8 @@ public class JavaCodeHelper {
 
     /**
      * Generates a getter method name from a field name.
+     * For boolean fields starting with "is", returns the field name as-is.
+     * Otherwise, prepends "get" with capitalized field name.
      * 
      * @param fieldName the field name
      * @return the getter method name
@@ -200,11 +211,18 @@ public class JavaCodeHelper {
         if (fieldName == null || fieldName.isEmpty()) {
             return null;
         }
+        // For boolean fields starting with "is", keep the name as-is
+        if (fieldName.startsWith("is") && fieldName.length() > 2 && 
+            Character.isUpperCase(fieldName.charAt(2))) {
+            return fieldName;
+        }
         return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
     /**
      * Generates a setter method name from a field name.
+     * For boolean fields starting with "is", removes the "is" prefix.
+     * Otherwise, prepends "set" with capitalized field name.
      * 
      * @param fieldName the field name
      * @return the setter method name
@@ -212,6 +230,11 @@ public class JavaCodeHelper {
     public String generateSetterName(String fieldName) {
         if (fieldName == null || fieldName.isEmpty()) {
             return null;
+        }
+        // For boolean fields starting with "is", remove "is" prefix
+        if (fieldName.startsWith("is") && fieldName.length() > 2 && 
+            Character.isUpperCase(fieldName.charAt(2))) {
+            return "set" + fieldName.substring(2);
         }
         return "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
